@@ -13,7 +13,7 @@
         .math-wrapper { direction: ltr !important; display: inline-flex; align-items: center; justify-content: center; gap: 5px; font-size: 17px; color: var(--blue);}
         .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
         .choice-grid-full { grid-template-columns: 1fr !important; }
-        .choice-btn { background: white; border: 3px solid var(--blue); padding: 10px 4px; border-radius: 8px; font-family: 'Cairo'; font-weight: 900; font-size: 14px; cursor: pointer; color: var(--dark); transition: 0.2s; direction: rtl; unicode-bidi: isolate; }
+        .choice-btn { background: white; border: 3px solid var(--blue); padding: 10px 4px; border-radius: 8px; font-family: 'Cairo'; font-weight: 900; font-size: 14px; cursor: pointer; color: var(--dark); transition: 0.2s; direction: rtl; }
         .choice-btn:disabled { opacity: 0.8; cursor: not-allowed; }
         .correct-answer { background: var(--green) !important; border-color: #1b5e20 !important; color: white !important; transform: scale(1.02); animation: pop 0.3s; }
         .wrong-click { background: #ffebee !important; border-color: var(--red) !important; color: var(--red) !important; }
@@ -47,7 +47,12 @@
     </div>
     <div id="toast"></div>
     <div id="quiz-container">
+        <div class="question-box active" id="intro-box" style="text-align: center;">
+            <h3 style="color: var(--blue);">🚀 رحلة الهندسة المبدعة 🌌</h3>
+            <p>مرحباً بك يا بطل في تحدي الأشكال الهندسية والزوايا. هل أنت مستعد للوصول للقمة؟</p>
+            <button class="opt-btn" style="background:var(--green); color:white; width:100%; padding:15px; border-radius:15px; font-size: 20px; font-weight: 900;" onclick="startQuiz(this)">انطلق الآن! 🚀</button>
         </div>
+    </div>
     <div id="name-input-container" style="display:none; text-align:center; padding: 20px 0;">
         <h2>كفو! يا بطل 👏</h2>
         <input type="text" id="studentName" placeholder="اكتب اسمك هنا..." style="padding: 12px; width: 80%; border-radius: 10px; border: 2px solid var(--blue); margin-bottom: 15px; font-family: 'Cairo'; text-align: center;">
@@ -65,7 +70,6 @@
 </div>
 
 <script>
-    // بيانات الأسئلة من ملفك الأصلي
     const questionsData = [
         { q: "الشكل المضلع الذي يتكون من 3 أضلاع؟", options: ["المثلث", "المربع", "الخماسي", "السداسي"], correct: 0 },
         { q: "الشكل المضلع الذي يتكون من 5 أضلاع يسمى:", options: ["شكل رباعي", "شكل خماسي", "شكل سداسي", "مثلث"], correct: 1 },
@@ -89,7 +93,7 @@
         { q: "الشكل المضلع الذي يتكون من 6 أضلاع يسمى:", options: ["الخماسي", "السداسي", "السباعي", "الثماني"], correct: 1 }
     ];
 
-    let mistakes = 0, totalScore = 100, currentQ = 1, isProcessing = false, startTime, audioCtx;
+    let totalScore = 100, isProcessing = false, startTime, audioCtx;
     const totalQ = questionsData.length;
 
     function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
@@ -120,12 +124,12 @@
         btns.forEach(b => b.disabled = true);
         if (isCorrect) {
             playTone(600, 0.3); btn.classList.add('correct-answer');
-            setTimeout(() => { if (index + 1 < totalQ) { renderQuestion(index + 1); currentQ++; isProcessing = false; } else { finishQuiz(); } }, 800);
+            setTimeout(() => { if (index + 1 < totalQ) { renderQuestion(index + 1); isProcessing = false; } else { finishQuiz(); } }, 800);
         } else {
             playTone(200, 0.3); btn.classList.add('wrong-click'); totalScore -= 5;
             document.getElementById('liveScore').innerText = Math.max(0, totalScore);
             btns[questionsData[index].correct].classList.add('correct-answer');
-            setTimeout(() => { if (index + 1 < totalQ) { renderQuestion(index + 1); currentQ++; isProcessing = false; } else { finishQuiz(); } }, 1500);
+            setTimeout(() => { if (index + 1 < totalQ) { renderQuestion(index + 1); isProcessing = false; } else { finishQuiz(); } }, 1500);
         }
     }
 
@@ -145,15 +149,14 @@
         document.getElementById('final').style.display = 'block';
     }
 
-    window.onload = createBackgroundBubbles;
-    function createBackgroundBubbles() {
+    window.onload = function() {
         const bg = document.getElementById('bgBubbles');
         for(let i=0; i<10; i++) {
             let b = document.createElement('div'); b.className = 'bubble'; b.innerText = '📐';
             b.style.left = Math.random() * 100 + 'vw'; b.style.animationDuration = (Math.random() * 8 + 5) + 's';
             bg.appendChild(b);
         }
-    }
+    };
 </script>
 </body>
 </html>
